@@ -10,6 +10,7 @@ import {
   clearQuery,
   clearSearchList,
   setGoToIdx,
+  fetchBySlipId,
 } from "@/store/slices/quotesSlice";
 import InteractionBar from "./InteractionBar";
 import Modal from "./ModalBox";
@@ -18,22 +19,26 @@ import RippleBtn from "./RippleBtn";
 import Loading from "./Loading";
 import SliderLayout from "./SliderLayout";
 import NavArrows from "./NavArrows";
+import { useRouter } from "next/router";
 
-interface Props {
-  children?: React.ReactNode;
-}
-
-const SliderList = ({ children }: Props) => {
+const SliderList = () => {
   const quotes = useAppSelector(selectQuotes);
   const dispatch = useAppDispatch();
   const sliderRef = useRef<Slider | null>(null);
   const [currIdx, setCurrIdx] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [term, setTerm] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
+    const slipId = router.asPath.split("=")[1];
     if (quotes.idList.length === 0) {
-      dispatch(fetchRandomQuote());
+      if (slipId) {
+        console.log("fetch by slip id");
+        dispatch(fetchBySlipId(slipId as string));
+      } else {
+        dispatch(fetchRandomQuote());
+      }
     }
   }, []);
 
@@ -92,7 +97,7 @@ const SliderList = ({ children }: Props) => {
     },
   };
   const handleNext = () => {
-    if (currIdx === quotes.list.length - 1) {
+    if (currIdx === quotes.idList.length - 1) {
       dispatch(fetchRandomQuote());
     } else {
       sliderRef.current?.slickNext();

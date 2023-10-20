@@ -4,8 +4,11 @@ import {
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
-
-import { apiFetchRandomQuote, apiFetchByTerm } from "../apis/quotesApi";
+import {
+  apiFetchRandomQuote,
+  apiFetchByTerm,
+  apiFetchBySlipId,
+} from "../apis/quotesApi";
 
 type Status = "idle" | "loading" | "failed" | "sameSlip";
 
@@ -21,7 +24,6 @@ type CollectionObject = {
 };
 
 interface AppType {
-  list: QuoteType[];
   collection: CollectionObject;
   favList: number[];
   searchList: QuoteType[];
@@ -33,7 +35,6 @@ interface AppType {
 }
 
 const initialState: AppType = {
-  list: [],
   collection: {},
   favList: [],
   searchList: [],
@@ -60,6 +61,14 @@ export const fetchByTerm = createAsyncThunk(
   }
 );
 
+export const fetchBySlipId = createAsyncThunk(
+  "quotes/apiFetchBySlipId",
+  async (slipid: string) => {
+    const response = await apiFetchBySlipId(slipid);
+    return response.json();
+  }
+);
+
 const quoteSlice = createSlice({
   initialState,
   name: "quote",
@@ -82,17 +91,15 @@ const quoteSlice = createSlice({
     setGoToIdx: (state, action: PayloadAction<null | number>) => {
       state.goToIdx = action.payload;
     },
-
     goToSlide: (state, action: PayloadAction<QuoteType>) => {
       const myset = new Set(state.idList);
       if (!myset.has(action.payload.id)) {
         state.idList.push(action.payload.id);
-        state.list.push(action.payload);
         state.collection = {
           ...state.collection,
           [action.payload.id]: { advice: action.payload.advice },
         };
-        state.goToIdx = state.list.length - 1;
+        state.goToIdx = state.idList.length - 1;
         console.log("not in curr array");
       } else {
         console.log("in curr array");
@@ -112,12 +119,11 @@ const quoteSlice = createSlice({
         const myset = new Set(state.idList);
         if (!myset.has(action.payload.slip.id)) {
           state.idList.push(action.payload.slip.id);
-          state.list.push(action.payload.slip);
           state.collection = {
             ...state.collection,
             [action.payload.slip.id]: { advice: action.payload.slip.advice },
           };
-          state.goToIdx = state.list.length - 1;
+          state.goToIdx = state.idList.length - 1;
           state.randomQuoteApiStatus = "idle";
         } else {
           console.log("sameSlip");
@@ -125,6 +131,21 @@ const quoteSlice = createSlice({
         }
       })
       .addCase(fetchRandomQuote.rejected, (state) => {
+        state.randomQuoteApiStatus = "failed";
+      })
+      .addCase(fetchBySlipId.pending, (state) => {
+        state.randomQuoteApiStatus = "loading";
+      })
+      .addCase(fetchBySlipId.fulfilled, (state, action) => {
+        state.idList.push(action.payload.slip.id);
+        state.collection = {
+          ...state.collection,
+          [action.payload.slip.id]: { advice: action.payload.slip.advice },
+        };
+        state.goToIdx = state.idList.length - 1;
+        state.randomQuoteApiStatus = "idle";
+      })
+      .addCase(fetchBySlipId.rejected, (state) => {
         state.randomQuoteApiStatus = "failed";
       })
       .addCase(fetchByTerm.pending, (state) => {
