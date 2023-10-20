@@ -1,3 +1,7 @@
 export function apiFetchRandomQuote() {
-  return fetch(`https://api.adviceslip.com/advice`);
+  return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/advice`);
+}
+
+export function apiFetchByTerm(term: string) {
+  return fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/advice/search/${term}`);
 }

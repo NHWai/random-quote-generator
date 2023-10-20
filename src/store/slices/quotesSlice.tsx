@@ -5,38 +5,43 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "..";
 
-import { apiFetchRandomQuote } from "../apis/quotesApi";
-type Status = "idle" | "loading" | "failed";
+import { apiFetchRandomQuote, apiFetchByTerm } from "../apis/quotesApi";
 
-interface QuoteType {
+type Status = "idle" | "loading" | "failed" | "sameSlip";
+
+export interface QuoteType {
   id: number;
   advice: string;
 }
 
+type CollectionObject = {
+  [id: number]: {
+    advice: string;
+  };
+};
+
 interface AppType {
   list: QuoteType[];
-  favList: QuoteType[];
-  status: Status;
+  collection: CollectionObject;
+  favList: number[];
+  searchList: QuoteType[];
+  randomQuoteApiStatus: Status;
+  fetchByTermApiStatus: Status;
   idList: number[];
+  query: string;
+  goToIdx: number | null;
 }
 
 const initialState: AppType = {
-  list: [
-    {
-      id: 1,
-      advice:
-        "Remember that spiders are more afraid of you, than you are of them.",
-    },
-    {
-      id: 2,
-      advice:
-        "Smile and the world smiles with you. Frown and you're on your own.",
-    },
-    { id: 3, advice: "Don't eat non-snow-coloured snow." },
-  ],
+  list: [],
+  collection: {},
   favList: [],
-  status: "idle",
-  idList: [1, 2, 3],
+  searchList: [],
+  randomQuoteApiStatus: "idle",
+  fetchByTermApiStatus: "idle",
+  idList: [],
+  query: "",
+  goToIdx: null,
 };
 
 export const fetchRandomQuote = createAsyncThunk(
@@ -47,38 +52,108 @@ export const fetchRandomQuote = createAsyncThunk(
   }
 );
 
+export const fetchByTerm = createAsyncThunk(
+  "quotes/apiFetchByTerm",
+  async (term: string) => {
+    const response = await apiFetchByTerm(term);
+    return response.json();
+  }
+);
+
 const quoteSlice = createSlice({
   initialState,
   name: "quote",
   reducers: {
-    addToFav: (state, action: PayloadAction<QuoteType>) => {
+    addToFav: (state, action: PayloadAction<number>) => {
       state.favList.push(action.payload);
     },
     removeFromFav: (state, action: PayloadAction<number>) => {
-      state.favList.splice(action.payload, 1);
+      const findDelIdx = state.favList.findIndex(
+        (item) => item === action.payload
+      );
+      state.favList.splice(findDelIdx, 1);
+    },
+    clearQuery: (state) => {
+      state.query = "";
+    },
+    clearSearchList: (state) => {
+      state.searchList = [];
+    },
+    setGoToIdx: (state, action: PayloadAction<null | number>) => {
+      state.goToIdx = action.payload;
+    },
+
+    goToSlide: (state, action: PayloadAction<QuoteType>) => {
+      const myset = new Set(state.idList);
+      if (!myset.has(action.payload.id)) {
+        state.idList.push(action.payload.id);
+        state.list.push(action.payload);
+        state.collection = {
+          ...state.collection,
+          [action.payload.id]: { advice: action.payload.advice },
+        };
+        state.goToIdx = state.list.length - 1;
+        console.log("not in curr array");
+      } else {
+        console.log("in curr array");
+        const findIdx = state.idList.findIndex(
+          (item) => item === action.payload.id
+        );
+        state.goToIdx = findIdx;
+      }
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRandomQuote.pending, (state) => {
-        state.status = "loading";
+        state.randomQuoteApiStatus = "loading";
       })
-      .addCase(fetchRandomQuote.fulfilled, (state, payload) => {
+      .addCase(fetchRandomQuote.fulfilled, (state, action) => {
         const myset = new Set(state.idList);
-        if (!myset.has(payload.payload.slip.id)) {
-          state.status = "idle";
-          console.log(payload.payload.slip.id);
-          state.idList.push(payload.payload.slip.id);
-          state.list.push(payload.payload.slip);
+        if (!myset.has(action.payload.slip.id)) {
+          state.idList.push(action.payload.slip.id);
+          state.list.push(action.payload.slip);
+          state.collection = {
+            ...state.collection,
+            [action.payload.slip.id]: { advice: action.payload.slip.advice },
+          };
+          state.goToIdx = state.list.length - 1;
+          state.randomQuoteApiStatus = "idle";
         } else {
-          state.status = "idle";
+          console.log("sameSlip");
+          state.randomQuoteApiStatus = "sameSlip";
         }
       })
       .addCase(fetchRandomQuote.rejected, (state) => {
-        state.status = "failed";
+        state.randomQuoteApiStatus = "failed";
+      })
+      .addCase(fetchByTerm.pending, (state) => {
+        state.fetchByTermApiStatus = "loading";
+      })
+      .addCase(fetchByTerm.fulfilled, (state, payload) => {
+        state.fetchByTermApiStatus = "idle";
+        if (payload.payload.slips) {
+          state.query = payload.payload.query;
+          state.searchList = payload.payload.slips;
+        } else {
+          state.searchList = [];
+        }
+      })
+      .addCase(fetchByTerm.rejected, (state) => {
+        state.fetchByTermApiStatus = "failed";
+        state.searchList = [];
       });
   },
 });
+
+export const {
+  clearQuery,
+  clearSearchList,
+  removeFromFav,
+  addToFav,
+  goToSlide,
+  setGoToIdx,
+} = quoteSlice.actions;
 
 export const selectQuotes = (state: RootState) => state.quotes;
 export const quotesReducer = quoteSlice.reducer;

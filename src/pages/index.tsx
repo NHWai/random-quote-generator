@@ -1,25 +1,15 @@
-import { Inter } from "next/font/google";
-import { fetchRandomQuote, selectQuotes } from "@/store/slices/quotesSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { useEffect } from "react";
 import SliderList from "@/components/SliderList";
-
-const inter = Inter({ subsets: ["latin"] });
+import MainLayout from "@/components/MainLayout";
+import Link from "next/link";
 
 export default function Home() {
-  const dispatch = useAppDispatch();
-  const quotes = useAppSelector(selectQuotes);
-
-  useEffect(() => {
-    dispatch(fetchRandomQuote());
-  }, []);
-
   return (
-    <main
-      className={`flex min-h-screen flex-col items-center justify-center  ${inter.className}`}
-    >
-      <div className="text-3xl">Slider</div>
+    <MainLayout>
+      <div className="text-5xl mb-4 text-center">Slider</div>
+      <Link href="/favquotes" className="mb-6 block  text-blue-500 text-center">
+        Go To Favorite Quotes &#8594;
+      </Link>
       <SliderList />
-    </main>
+    </MainLayout>
   );
 }
