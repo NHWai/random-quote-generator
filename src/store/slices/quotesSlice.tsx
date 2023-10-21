@@ -92,8 +92,9 @@ const quoteSlice = createSlice({
       state.goToIdx = action.payload;
     },
     goToSlide: (state, action: PayloadAction<QuoteType>) => {
-      const myset = new Set(state.idList);
-      if (!myset.has(action.payload.id)) {
+      // const myset = new Set(state.idList);
+      const isInList = state.idList.some((item) => item === action.payload.id);
+      if (!isInList) {
         state.idList.push(action.payload.id);
         state.collection = {
           ...state.collection,
@@ -116,8 +117,11 @@ const quoteSlice = createSlice({
         state.randomQuoteApiStatus = "loading";
       })
       .addCase(fetchRandomQuote.fulfilled, (state, action) => {
-        const myset = new Set(state.idList);
-        if (!myset.has(action.payload.slip.id)) {
+        // const myset = new Set(state.idList);
+        const isInList = state.idList.some(
+          (item) => item === action.payload.slip.id
+        );
+        if (!isInList) {
           state.idList.push(action.payload.slip.id);
           state.collection = {
             ...state.collection,
