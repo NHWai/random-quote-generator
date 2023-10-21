@@ -1,40 +1,44 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Random Quote Generator
+The **Random Quote Generator** project is created according to the assignment from **Anbuchi Technology**.
+<br>
+<br>
 
-## Getting Started
+![Preview](https://plus.unsplash.com/premium_photo-1697211174198-18da849f87c6?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)
 
-First, run the development server:
+### 🔗 **Live preview** of the project is [here](https://random-quote-generator-five-delta.vercel.app/).
 
-```bash
+## **Features**
+* Get Random Quotes
+* Save Favourite Quotes
+* Share your favourite quote to other social media
+
+## **Project Work Flow**
+* Hit Next Button => If the current index is in the array, show the next quote in array if not fetch random quote from backend, add to the array and show it.
+* Hit Prev Button => Ensure to show the previous quote first whether you are in the array or jump to random quotes.
+* Hit the Quote Card => fetch random quote from backend. 
+
+## **Outcome**
+* Used **React**
+* Used **Tailwind**
+* Used **Redux Toolkit** with function based approach.
+* Used **React Slick** for carousel.
+* Learned data fetching concept.
+* Learned conditional rendering.
+* Learned importance of Redux store structure.
+* Learned reuseable UI components with Tailwind.
+
+## **Getting Started**
+```
+HTTPS - git clone https://github.com/NHWai/random-quote-generator.git
+
+cd random-quote-generator
+
+npm install
+
+touch .env.local
+
+./.env.local => NEXT_PUBLIC_BASE_URL=https://api.adviceslip.com
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
