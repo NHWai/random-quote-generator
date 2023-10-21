@@ -147,7 +147,7 @@ const SliderList = ({ handleSet }: Props) => {
         </div>
         <NavArrows
           showPrevArrow={currIdx ? true : false}
-          showNextArrow={true}
+          showNextArrow={quotes.randomQuoteApiStatus === "idle" ? true : false}
           handleNext={handleNext}
           handlePrev={handlePrev}
         />
