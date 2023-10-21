@@ -15,7 +15,8 @@ The **Random Quote Generator** project is created according to the assignment fr
 ## **Project Work Flow**
 * Hit Next Button => If the current index is in the array, show the next quote in array if not fetch random quote from backend, add to the array and show it.
 * Hit Prev Button => Ensure to show the previous quote first whether you are in the array or jump to random quotes.
-* Hit the Quote Card => fetch random quote from backend. 
+* Hit the Quote Card => fetch random quote from backend.
+* You can search the quotes by character,word or phrases.
 
 ## **Outcome**
 * Used **React**
