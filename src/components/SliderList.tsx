@@ -13,6 +13,7 @@ import {
   fetchBySlipId,
   setPrevIdx,
   goToSlide,
+  setMainPageIdx,
 } from "@/store/slices/quotesSlice";
 import InteractionBar from "./InteractionBar";
 import Modal from "./ModalBox";
@@ -23,7 +24,11 @@ import SliderLayout from "./SliderLayout";
 import NavArrows from "./NavArrows";
 import { useRouter } from "next/router";
 
-const SliderList = () => {
+interface Props {
+  handleSet: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const SliderList = ({ handleSet }: Props) => {
   const quotes = useAppSelector(selectQuotes);
   const dispatch = useAppDispatch();
   const sliderRef = useRef<Slider | null>(null);
@@ -36,11 +41,13 @@ const SliderList = () => {
     const slipId = router.asPath.split("=")[1];
     if (quotes.idList.length === 0) {
       if (slipId) {
-        console.log("fetch by slip id");
         dispatch(fetchBySlipId(slipId as string));
       } else {
         dispatch(fetchRandomQuote());
       }
+    } else if (typeof quotes.mainPageIdx === "number" && sliderRef.current) {
+      sliderRef.current.slickGoTo(quotes.mainPageIdx, false);
+      dispatch(setMainPageIdx(null));
     }
   }, []);
 
@@ -80,7 +87,6 @@ const SliderList = () => {
   };
 
   const handleRandom = () => {
-    console.log("handleRandom currIdx", currIdx);
     dispatch(setPrevIdx(currIdx));
     dispatch(fetchRandomQuote());
   };
@@ -95,10 +101,10 @@ const SliderList = () => {
     centerPadding: "0",
     beforeChange: (oldIdx: number, newIdx: number) => {
       setCurrIdx(newIdx);
+      handleSet(newIdx);
       if (quotes.goToIdx !== null) {
         dispatch(setGoToIdx(null));
       }
-      console.log("prevId", quotes.prevId);
     },
   };
   const handleNext = () => {
@@ -110,8 +116,8 @@ const SliderList = () => {
   };
 
   const handlePrev = () => {
-    if (typeof quotes.prevId === "number") {
-      dispatch(setGoToIdx(quotes.prevId));
+    if (typeof quotes.prevIdx === "number") {
+      dispatch(setGoToIdx(quotes.prevIdx));
       dispatch(setPrevIdx(null));
     } else {
       sliderRef.current?.slickPrev();
