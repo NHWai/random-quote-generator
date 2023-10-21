@@ -108,6 +108,9 @@ const SliderList = ({ handleSet }: Props) => {
     },
   };
   const handleNext = () => {
+    if (typeof quotes.prevIdx === "number") {
+      dispatch(setPrevIdx(null));
+    }
     if (currIdx === quotes.idList.length - 1) {
       dispatch(fetchRandomQuote());
     } else {
