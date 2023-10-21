@@ -7,7 +7,6 @@ import {
 } from "@/store/slices/quotesSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Tooltip } from "./Tooltip";
-import { useRouter } from "next/router";
 
 interface Props {
   currIdx: number;
@@ -16,9 +15,10 @@ interface Props {
 const SocialBar = ({ currIdx }: Props) => {
   const quotes = useAppSelector(selectQuotes);
   const dispatch = useAppDispatch();
-  const favListset = new Set(quotes.favList);
+  // const favListset = new Set(quotes.favList);
   const currSlipId = quotes.idList[currIdx];
-  const inFavList = favListset.has(currSlipId);
+  // const inFavList = favListset.has(currSlipId);
+  const inFavList = quotes.favList.some((item) => item === currSlipId);
 
   const copyLink = () => {
     const textToCopy = `${window.location.origin}/?slipid=${currSlipId}`;

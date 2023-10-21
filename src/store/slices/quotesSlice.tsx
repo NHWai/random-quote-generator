@@ -32,6 +32,8 @@ interface AppType {
   idList: number[];
   query: string;
   goToIdx: number | null;
+  prevIdx: number | null;
+  mainPageIdx: number | null;
 }
 
 const initialState: AppType = {
@@ -43,6 +45,8 @@ const initialState: AppType = {
   idList: [],
   query: "",
   goToIdx: null,
+  prevIdx: null,
+  mainPageIdx: null,
 };
 
 export const fetchRandomQuote = createAsyncThunk(
@@ -91,9 +95,16 @@ const quoteSlice = createSlice({
     setGoToIdx: (state, action: PayloadAction<null | number>) => {
       state.goToIdx = action.payload;
     },
+    setPrevIdx: (state, action: PayloadAction<null | number>) => {
+      state.prevIdx = action.payload;
+    },
+    setMainPageIdx: (state, action: PayloadAction<number | null>) => {
+      state.mainPageIdx = action.payload;
+    },
     goToSlide: (state, action: PayloadAction<QuoteType>) => {
-      const myset = new Set(state.idList);
-      if (!myset.has(action.payload.id)) {
+      // const myset = new Set(state.idList);
+      const isInList = state.idList.some((item) => item === action.payload.id);
+      if (!isInList) {
         state.idList.push(action.payload.id);
         state.collection = {
           ...state.collection,
@@ -116,8 +127,11 @@ const quoteSlice = createSlice({
         state.randomQuoteApiStatus = "loading";
       })
       .addCase(fetchRandomQuote.fulfilled, (state, action) => {
-        const myset = new Set(state.idList);
-        if (!myset.has(action.payload.slip.id)) {
+        // const myset = new Set(state.idList);
+        const isInList = state.idList.some(
+          (item) => item === action.payload.slip.id
+        );
+        if (!isInList) {
           state.idList.push(action.payload.slip.id);
           state.collection = {
             ...state.collection,
@@ -174,6 +188,8 @@ export const {
   addToFav,
   goToSlide,
   setGoToIdx,
+  setPrevIdx,
+  setMainPageIdx,
 } = quoteSlice.actions;
 
 export const selectQuotes = (state: RootState) => state.quotes;
