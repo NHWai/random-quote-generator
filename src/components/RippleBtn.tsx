@@ -6,7 +6,7 @@ interface Props {
 }
 
 const RippleBtn = ({ children, classnames }: Props) => {
-  const handleRipple = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleRipple = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     // Create a ripple element
     const ripple = document.createElement("div");
     ripple.classList.add("ripple");
@@ -26,12 +26,12 @@ const RippleBtn = ({ children, classnames }: Props) => {
   };
 
   return (
-    <button
+    <div
       className={`relative rounded-md focus:outline-none ${classnames} overflow-hidden `}
       onClick={handleRipple}
     >
       {children}
-    </button>
+    </div>
   );
 };
 
