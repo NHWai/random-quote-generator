@@ -11,6 +11,8 @@ import {
   clearSearchList,
   setGoToIdx,
   fetchBySlipId,
+  setPrevIdx,
+  goToSlide,
 } from "@/store/slices/quotesSlice";
 import InteractionBar from "./InteractionBar";
 import Modal from "./ModalBox";
@@ -78,6 +80,8 @@ const SliderList = () => {
   };
 
   const handleRandom = () => {
+    console.log("handleRandom currIdx", currIdx);
+    dispatch(setPrevIdx(currIdx));
     dispatch(fetchRandomQuote());
   };
 
@@ -94,6 +98,7 @@ const SliderList = () => {
       if (quotes.goToIdx !== null) {
         dispatch(setGoToIdx(null));
       }
+      console.log("prevId", quotes.prevId);
     },
   };
   const handleNext = () => {
@@ -105,7 +110,12 @@ const SliderList = () => {
   };
 
   const handlePrev = () => {
-    sliderRef.current?.slickPrev();
+    if (typeof quotes.prevId === "number") {
+      dispatch(setGoToIdx(quotes.prevId));
+      dispatch(setPrevIdx(null));
+    } else {
+      sliderRef.current?.slickPrev();
+    }
   };
 
   return (

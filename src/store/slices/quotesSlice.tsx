@@ -32,6 +32,7 @@ interface AppType {
   idList: number[];
   query: string;
   goToIdx: number | null;
+  prevId: number | null;
 }
 
 const initialState: AppType = {
@@ -43,6 +44,7 @@ const initialState: AppType = {
   idList: [],
   query: "",
   goToIdx: null,
+  prevId: null,
 };
 
 export const fetchRandomQuote = createAsyncThunk(
@@ -90,6 +92,9 @@ const quoteSlice = createSlice({
     },
     setGoToIdx: (state, action: PayloadAction<null | number>) => {
       state.goToIdx = action.payload;
+    },
+    setPrevIdx: (state, action: PayloadAction<null | number>) => {
+      state.prevId = action.payload;
     },
     goToSlide: (state, action: PayloadAction<QuoteType>) => {
       // const myset = new Set(state.idList);
@@ -178,6 +183,7 @@ export const {
   addToFav,
   goToSlide,
   setGoToIdx,
+  setPrevIdx,
 } = quoteSlice.actions;
 
 export const selectQuotes = (state: RootState) => state.quotes;
