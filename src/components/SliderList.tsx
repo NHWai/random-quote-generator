@@ -52,7 +52,7 @@ const SliderList = ({ handleSet }: Props) => {
   }, []);
 
   useEffect(() => {
-    let timeoutId: any;
+    let timeoutId: NodeJS.Timeout;
     //if randomQuoteApi returns same slip, make another request after waiting for 1s
     if (quotes.randomQuoteApiStatus === "sameSlip") {
       timeoutId = setTimeout(() => dispatch(fetchRandomQuote()), 1000);
