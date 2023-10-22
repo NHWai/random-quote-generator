@@ -99,6 +99,7 @@ const SliderList = ({ handleSet }: Props) => {
     slidesToShow: 1,
     centerMode: true,
     centerPadding: "0",
+    initialSlide: currIdx,
     beforeChange: (oldIdx: number, newIdx: number) => {
       setCurrIdx(newIdx);
       handleSet(newIdx);
