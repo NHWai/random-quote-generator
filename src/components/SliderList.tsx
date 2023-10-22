@@ -12,8 +12,6 @@ import {
   setGoToIdx,
   fetchBySlipId,
   setPrevIdx,
-  goToSlide,
-  setMainPageIdx,
 } from "@/store/slices/quotesSlice";
 import InteractionBar from "./InteractionBar";
 import Modal from "./ModalBox";
@@ -45,9 +43,6 @@ const SliderList = ({ handleSet }: Props) => {
       } else {
         dispatch(fetchRandomQuote());
       }
-    } else if (typeof quotes.mainPageIdx === "number" && sliderRef.current) {
-      sliderRef.current.slickGoTo(quotes.mainPageIdx, false);
-      dispatch(setMainPageIdx(null));
     }
   }, []);
 
@@ -93,16 +88,18 @@ const SliderList = ({ handleSet }: Props) => {
 
   const settings = {
     speed: 500,
-    infinite: false,
+    isFinite: true,
     touchMove: false,
     arrows: false,
     slidesToShow: 1,
     centerMode: true,
     centerPadding: "0",
-    initialSlide: currIdx,
+    initialSlide: typeof quotes.goToIdx === "number" ? currIdx : 0,
     beforeChange: (oldIdx: number, newIdx: number) => {
       setCurrIdx(newIdx);
       handleSet(newIdx);
+    },
+    afterChange: () => {
       if (quotes.goToIdx !== null) {
         dispatch(setGoToIdx(null));
       }

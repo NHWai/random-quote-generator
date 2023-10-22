@@ -3,13 +3,13 @@ import MainLayout from "@/components/MainLayout";
 import Link from "next/link";
 import { useState } from "react";
 import { useAppDispatch } from "@/store/hooks";
-import { setGoToIdx, setMainPageIdx } from "@/store/slices/quotesSlice";
+import { setGoToIdx } from "@/store/slices/quotesSlice";
 
 export default function Home() {
   const dispatch = useAppDispatch();
   const [currIdx, setCurrIdx] = useState(0);
   const handleSet = (id: number) => {
-    dispatch(setMainPageIdx(id));
+    dispatch(setGoToIdx(id));
   };
   return (
     <MainLayout>
