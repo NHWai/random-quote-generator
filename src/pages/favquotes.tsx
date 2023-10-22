@@ -66,15 +66,17 @@ const NewSlider = () => {
                   result count: {filteredList.length}
                 </div>
               </div>
-              <div onClick={() => term && setTerm("")}>
+              <button disabled={!term} onClick={() => term && setTerm("")}>
                 <RippleBtn
-                  classnames={`text-xs italic text-red-500 px-2 py-1 border border-red-500 ${
-                    !term && "invisible"
+                  classnames={`text-xs italic  px-2 py-1 border  ${
+                    term
+                      ? "text-red-500 border-red-500"
+                      : "text-slate-500 border-slate-500"
                   }`}
                 >
                   Clear Filter
                 </RippleBtn>
-              </div>
+              </button>
             </div>
             <div>
               {filteredList.map((item) => (

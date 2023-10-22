@@ -27,7 +27,7 @@ const RippleBtn = ({ children, classnames }: Props) => {
 
   return (
     <div
-      className={`relative rounded-md focus:outline-none ${classnames} overflow-hidden `}
+      className={`relative rounded-md focus:outline-none cursor-pointer ${classnames} overflow-hidden `}
       onClick={handleRipple}
     >
       {children}
